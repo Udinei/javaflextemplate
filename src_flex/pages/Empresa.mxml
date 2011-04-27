@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	label="EMPRESA" 
+	styleName="pageContainer"
+	width="955">
+	
+	<mx:Canvas width="50%" height="320">
+		<mx:Image source="assets/images/home/1.jpg"  x="51" y="10" />					
+	</mx:Canvas>
+	<mx:VBox width="50%">
+		<mx:Label text="A Empresa" styleName="pageTitle" />	
+		<mx:Text width="300">
+			<mx:htmlText>
+				<![CDATA[							
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+<p>Fusce eget est ac risus vehicula imperdiet. Maecenas libero purus, dictum sed, eleifend vel, iaculis quis, sapien. Vivamus scelerisque nisl nec mi. Donec scelerisque lacinia mi. Nullam vel lectus eu nunc sodales auctor. Sed eget enim. Donec quis nunc. Suspendisse potenti. Cras diam. Pellentesque facilisis porta sem. Ut euismod vulputate magna. Etiam eget enim eu risus pulvinar euismod. In hac habitasse platea dictumst. Pellentesque nisl felis, ullamcorper placerat, pellentesque quis, mattis in, lorem. Phasellus non tellus.</p>
+<p>Suspendisse volutpat, sem non commodo semper, lectus sem dictum enim, in iaculis mauris mi sed elit.</p>								
+				]]>
+			</mx:htmlText>
+		</mx:Text>
+	</mx:VBox>
+		
+</mx:HBox>

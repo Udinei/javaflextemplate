@@ -1,0 +1,28 @@
+/* CSS file */
+Application
+{
+	background-image: "assets/images/home/bg.jpg";
+}
+LinkBar
+{
+	fontSize: 20;
+	color: #FFFFFF;
+	separatorColor: #FFFFFF;
+	textRollOverColor: #05B47C;
+	textSelectedColor: #05B47C;
+	fontFamily: "Times New Roman";
+	fontWeight: normal;
+	borderColor: #FFFFFF;
+	disabledColor: #FFFFFF;
+}
+
+.pageContainer {
+	padding-bottom: 10;
+	padding-left: 10;
+	padding-right: 10;
+	padding-top: 10;	
+}
+.pageTitle {
+	font-size: 12;
+	font-weight: bold;
+}

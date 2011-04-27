@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="100%" height="100%" label="CONTATO" styleName="pageContainer">
+
+    <mx:StringValidator source="{nome}" property="text"
+    	required="true"
+    	requiredFieldError="Campo obrigatório" 
+    	minLength="4" maxLength="30" 
+    	trigger="{btnEnviar}" triggerEvent="click" 
+    	valid="mx.controls.Alert.show('Nome ok!');"/>	
+	
+    <mx:StringValidator source="{msg}" property="text"
+    	required="true"
+    	requiredFieldError="Campo obrigatório" 
+    	minLength="4" maxLength="30" 
+    	trigger="{btnEnviar}" triggerEvent="click" 
+    	valid="mx.controls.Alert.show('Email MSG ok!');"/>		
+
+	<mx:EmailValidator source="{email}" property="text"
+		required="true"
+		requiredFieldError="Campo obrigatório"
+		invalidPeriodsInDomainError="Inválido" 
+		trigger="{btnEnviar}" triggerEvent="click"
+		valid="mx.controls.Alert.show('EMAIL OK')" />	
+	
+	<mx:Canvas width="50%" height="320">
+		<mx:Image source="assets/images/contato/1.jpg"  x="51" y="10" />					
+	</mx:Canvas>
+	<mx:VBox width="50%">
+		<mx:Label text="Fale Conosco" styleName="pageTitle" />	
+		<mx:Form>
+			<mx:FormItem required="true" label="Nome:">
+				<mx:TextInput id="nome" />
+			</mx:FormItem>
+			<mx:FormItem required="true" label="E-mail:">
+				<mx:TextInput id="email" />
+			</mx:FormItem>
+			<mx:FormItem required="true" label="Mensagem:"> 
+				<mx:TextArea id="msg" />
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Button label="Enviar" id="btnEnviar" />
+	</mx:VBox>		
+</mx:HBox>

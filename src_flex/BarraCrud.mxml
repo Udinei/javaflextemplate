@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+    
+	<mx:Metadata>
+			[Event(name="novoClick", type="flash.events.Event")]
+			[Event(name="salvarClick", type="flash.events.Event")]
+		    //[Event(name="limparClick", type="flash.events.Event")] 
+			[Event(name="cancelarClick", type="flash.events.Event")]
+			[Event(name="excluirClick", type="flash.events.Event")]
+			[Event(name="pesquisarClick", type="flash.events.Event")]
+	</mx:Metadata>
+	
+	<mx:Button label="Novo" id="novo" click="dispatchEvent(new Event('novoClick'))" />
+	<mx:Button label="Salvar" id="salvar" click="dispatchEvent(new Event('salvarClick'))"  />	
+<!--<mx:Button label="Limpar" id="limpar" click="dispatchEvent(new Event('limparClick'))"  /> -->	
+	<mx:Button label="Cancelar" id="cancelar" click="dispatchEvent(new Event('cancelarClick'))"  />	
+	<mx:Button label="Excluir" id="excluir" click="dispatchEvent(new Event('excluirClick'))"  />
+	<mx:Button label="Pesquisar" id="pesquisar" click="dispatchEvent(new Event('pesquisarClick'))"  />
+	
+	   <mx:Script> 
+	    <![CDATA[
+	     
+	     
+
+	    ]]> 
+       
+  </mx:Script>
+</mx:HBox>
+
+
+
