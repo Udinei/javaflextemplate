@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+	
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	   layout="vertical" width="594" height="570" creationComplete="listPaginacao()"
+	     xmlns:local="*" xmlns:screen="com.myorg.view.screen.*" horizontalAlign="left"
+	     label="PRODUTO" styleName="pageContainer"> 
+
+ 
+       				 		
+<mx:VBox width="501" paddingLeft="0" paddingRight="0" horizontalCenter="0" top="15" height="463">
+
+
+	
+        <mx:ApplicationControlBar id="acb" width="402" styleName="storeControlBar">
+
+            <mx:ToggleButtonBar
+                height="100%"
+                dataProvider="{storeViews}"
+                styleName="storeButtonBar"/>
+                
+           
+	
+        </mx:ApplicationControlBar>
+
+        <mx:ViewStack id="storeViews" width="465" height="360" creationPolicy="all">
+            <mx:Box id="telaInicio" label="Integração">
+            
+            
+   <mx:Form width="436" height="250" >     
+	 
+        <mx:FormHeading label="Tela de teste, Design, e Integração do Java 1.6 com Flex 3.0 e Postgres 8.1 " width="100%"/>
+          
+         <!-- Barra Horizontal -->
+        <mx:HRule x="10" y="49" width="388"  height="1"/>
+               
+	    <mx:FormItem label="ID:" width="368" direction="horizontal">    
+    	<mx:TextInput width="106" id="txtId"    
+	            text="{Product(dgProduct.selectedItem).id}" editable="false" enabled="false"/>
+    	<mx:CheckBox id="pesquisarId" label="Pesquisar por id" click="pesquisarById()" textAlign="left"/>
+    	
+   
+	 </mx:FormItem>  
+	    <mx:FormItem label="Descrição:" width="345"  required="true">       
+	       <mx:TextInput width="100%" id="txtDsName" text="{Product(dgProduct.selectedItem).name}" />
+	          
+	 </mx:FormItem>
+	 
+	   	    
+	 <mx:DataGrid id="dgProduct" width="388" height="124" allowMultipleSelection="true" dataProvider="{listProduct}">   
+	       <mx:columns>   
+	         <mx:DataGridColumn headerText="ID" dataField="id" width="30"/>  
+	          <mx:DataGridColumn headerText="Descrição" dataField="name"/>     
+	       </mx:columns>  
+	  </mx:DataGrid> 
+	   
+ </mx:Form>
+ 
+ <mx:VBox>
+   <mx:Label id="pesqTot" visible="false" text="Pesquisa registros encontrados : {this.pesqTotalRegistros}"  width="223"/>
+ </mx:VBox>
+	
+  
+   <mx:HBox  width="441">
+     <mx:Button id="BTvoltar" label="&lt;&lt;" enabled="{paginaAtual != 0 }" click="voltar()" />
+     
+     <mx:Button id="BTavancar" label="&gt;&gt;" left="62" bottom="10" click="avancar()" />
+     <mx:Label text="Registros por página:"/>
+     <mx:ComboBox id="cbQuantidade" change="changeCombobox()" >
+         <mx:dataProvider>
+            <mx:Array>
+               <mx:Object label="10"/>
+               <mx:Object label="20"/>
+               <mx:Object label="50"/>
+            </mx:Array>
+         </mx:dataProvider>
+     </mx:ComboBox>
+     <mx:Label text="Total : {totalRegistros}"  width="135"/>
+   
+   
+   </mx:HBox>
+ 	 
+     <local:BarraCrud width="436" novoClick="setDefault()" salvarClick="save()" excluirClick="showAlert()" pesquisarClick="getSearch()" />  	     
+            </mx:Box>
+            
+            <mx:Box id="telaProdutos" label="Produtos">
+                <mx:Text text="Lista de produtos...."/>
+                
+            </mx:Box>
+            
+             <mx:Box id="telaContato" label="Contato"> 
+                  <mx:Text text="Formulário de Contato"/>
+            </mx:Box>
+        </mx:ViewStack>
+
+    </mx:VBox>
+    
+
+	
+	<mx:RemoteObject id="productService" showBusyCursor="true"  fault="onFault(event)" destination="productService">    
+	    
+	    <mx:method name="save" result="onResultSave(event)" fault="onFault(event)"/>    
+	    <mx:method name="remove" result="onResultRemove(event)" fault="onFault(event)"/> 
+	    <mx:method name="getList" result="onResultGetList(event)" fault="onFault(event)"/> 
+	    <mx:method name="getSearch" result="onResultGetSearch(event)" fault="onFault(event)"/>
+	    <mx:method name="listPaginacao" result="ResultBusca(event)"  fault="onFault(event)"/>
+	    <mx:method name="getTotalRegistros" result="ResultTotalReg(event)" fault="onFault(event)"/>
+     </mx:RemoteObject>
+     
+            <mx:StringValidator	id="dsNameValidator"	
+       		                source="{txtDsName}"
+       				        property="text"
+       				 		required="true"	
+       				 		requiredFieldError="Campo obrigatório"/>    
+         
+	  <mx:Script> 
+	    <![CDATA[
+	    	import flash.sampler.DeleteObjectSample;
+	    	import mx.events.ValidationResultEvent;
+	      import mx.charts.CategoryAxis;     
+	      import mx.collections.ArrayCollection;  
+	      import com.myorg.view.entity.Product;      
+	      import mx.rpc.events.ResultEvent;      
+	      import mx.rpc.events.FaultEvent;     
+	      import mx.controls.Alert;     
+	      import mx.validators.Validator; 
+	      import mx.core.UIComponent;  
+	      import mx.events.CloseEvent;
+        
+ 
+
+	      private var evTituloValid:ValidationResultEvent;     
+	      [Bindable]
+	      private var listProduct:ArrayCollection;
+	       [Bindable]
+	      private var listProductX:ArrayCollection; 
+          private var product:Product;
+        
+
+         
+     //<!-- inicio paginacao --> 
+         
+       // guarda a página atual
+        [Bindable]
+         private var paginaAtual:Number=0;
+         [Bindable]
+         private var totalRegistros:Number = 0;
+         
+         [Bindable] 
+         private var pesqTotalRegistros:Number = 0; 
+            
+        private function avancar():void{
+            paginaAtual += 1;
+            PesquisarMensagens();
+        }
+        
+        
+        private function voltar():void  {
+            paginaAtual -= 1;
+            PesquisarMensagens();
+        }
+        
+        private function changeCombobox():void {
+            paginaAtual = 0;
+            PesquisarMensagens();
+        }
+        
+         public function PesquisarMensagens():void
+        { 
+            listPaginacao();
+        }
+        
+        private function listPaginacao():void { 
+        	
+         productService.listPaginacao(Number(cbQuantidade.selectedLabel)*paginaAtual, 
+                                                          cbQuantidade.selectedLabel);
+        }
+        
+        private function ResultBusca(e:ResultEvent):void
+        {
+            // É retornado um array com os elementos da paginacao.
+            var lista:ArrayCollection = e.result as ArrayCollection;
+            totalRegistros = lista[0];
+            dgProduct.dataProvider = lista[1];
+                      
+            
+            // verifica as próximas páginas
+            var numPaginas:int = totalRegistros / Number(cbQuantidade.selectedLabel)
+            
+           // Alert.show("total registro "+numPaginas + "pagina atual "+ paginaAtual);
+             
+            if(numPaginas > paginaAtual)
+            {
+                BTavancar.enabled = true;
+            }
+            else
+            {
+                BTavancar.enabled = false;
+            }
+        }
+         
+    
+     //<!--  fim paginacao -->
+     
+            
+	 public function save():void   {
+	  pesqTot.visible = false;
+	//var evDsNameValid:ValidationResultEvent = dsNameValidator.validate();	
+	  
+	  //valida os campos obrigatórios	
+	  //if ((evDsNameValid.type == ValidationResultEvent.VALID)){
+	   	//  Alert.show('Validações com sucesso, agora envie para o SERVER', 'Sucesso');
+	   	  
+	   	  this.product = new Product();
+	      this.product.id   = new Number(txtId.text);    
+	      this.product.name   = txtDsName.text;   
+	    
+	  //Chama o metodo Save do servico "cargoService"
+	  productService.save(product);
+	  
+	 /* }else{
+    	  Alert.show('Você deve preencher os campos corretamente', 'Erro, campos inválidos');
+      }*/
+    }
+	 
+	 //Função que será executada após a conclusão do método save
+	  public function onResultSave(event:ResultEvent):void {
+	  	
+       //mostra no canto esquerdo superior da tela o id od objeto cadastrado                    	                	
+	   status = "Salvo com Sucesso! Ultima ID: "+Product(event.result).id;
+	   
+	    //seta os campos apos salvar o objeto
+	    this.txtId.text = Product(event.result).id.toString();
+	    this.txtDsName.text = Product(event.result).name;
+	    	    	
+	    //obtem total de registros cadastrados e mostra mensagem da qtd de registros cadastrados para o objeto em questão	
+	    getTotalRegistros();
+	    //faz buscal por id
+      	getSearch();
+	   
+	  }
+	   
+	  //remove um ou mais objetos selecionados na grid dgProduct   
+	  public function remove():void {
+	  	//abilita a visualização da mensagem da qtd de registros pesquisados encontrados  
+	    pesqTot.visible = false;
+	    
+	  //  var eventObj:CloseEvent;
+	  //   Alert.show("Corpo do texto", "TITULO",11);
+	     
+	    //se tiver algum objeto selecionado na grid
+	    if (dgProduct.selectedItem != null) {
+	    
+	       	  // if (event.detail==Alert.OK) {
+             //      var a:Alert = Alert.show("Copy Text?", "Alert", Alert.OK | Alert.CANCEL, this,null ,null, Alert.OK);
+             //Alert.show("Copy Text?"+a.)
+	    	 // envia mensagem para service remover o objeto ou os objetos selecionados
+ 
+	          productService.remove(dgProduct.selectedItems);
+	         
+	            
+	       }else {  
+	            Alert.show("Selecione um Item na DataGrid");     
+	        }                   	                           	                                         	
+	   
+	    } 
+	
+	     
+		  // Mostra Alert control
+		public function showAlert() : void
+		{   
+			Alert.yesLabel = "Sim";
+		    Alert.noLabel = "Não";
+		
+		    // the show method follows the method signature from the Flex Actionscript API
+		    Alert.show( "Deseja realmente excluir o item(s)?",
+		                         "Confirmar Excluir", 
+		                         Alert.YES| Alert.NO,
+		                         null,
+		                         handleAlert,
+		                         null,
+		                         Alert.YES);
+		}
+ 
+		// handle the Alert control button click
+		public function handleAlert( event:Object ) : void
+		{
+		    if( event.detail == Alert.YES)
+		    {
+		        remove();// YES button was clicked
+		    }
+		}
+	     
+	  public function getList():void  {     
+         productService.getList();
+                           
+	  }  
+      
+       public function getSearch():void  {
+       	search();
+       	pesqTot.visible = true;     
+       	
+       }  
+      
+      public function search():void  {  
+      	  
+      txtId.editable=true;
+      
+      product = new Product();
+	  product.id   = new Number(txtId.text);    
+	  product.name   = txtDsName.text;
+	    
+       productService.getSearch(product, Number(cbQuantidade.selectedLabel)*paginaAtual, 
+                                                          cbQuantidade.selectedLabel);         
+	  }
+	  
+	      
+      //Função que será executada após a conclusão do método  getList  
+      public function onResultGetList(event:ResultEvent):void {
+      	try{
+      		   listProduct = event.result as ArrayCollection;
+      		   this.totalRegistros = listProduct.length;
+      
+      	}catch(error:IOErrorEvent){
+      		  trace("IOErrorEvent catch: " + error);
+      	}
+         	  
+      }
+      
+        //Função que será executada após a conclusão do método remove    
+      public function onResultRemove(event:ResultEvent):void {
+    	
+      	    status = "Excluido com Sucesso!";
+      	    listPaginacao();
+      	           	
+	  	      
+     }       
+      
+      //Função que será executada após a conclusão do método  getSearch  
+      public function onResultGetSearch(event:ResultEvent):void {
+         	   listProduct = event.result as ArrayCollection;
+         	        	  
+         	   this.pesqTotalRegistros = listProduct.length;         	   
+          	   product  = listProduct[0];
+         	                 
+         	   this.txtId.text = product.id.toString();
+	           this.txtDsName.text = product.name;
+	         
+      }   
+        
+      //retorna o total de registros cadastrado do objeto em uso  
+     public function getTotalRegistros():void{
+     	  productService.getTotalRegistros(this.product);
+     	    	    	
+     }  
+     
+     //funcao que sera executada apos o execucao da funcao getTotalRegistros, ira setar a mensagem qtd registros cadastrados
+     // para o objeto em uso.           
+     public function ResultTotalReg(event:ResultEvent):void {
+        var listTotalReg:ArrayCollection;
+        //obtem o retorno de getTotalRegistros que é um lista de objeto,
+        listTotalReg = event.result as ArrayCollection;
+        // obtendo a primeira lista, que informa a qtd de objetos cadastrados, e setando a mensagem
+        this.totalRegistros = listTotalReg[0];
+      
+             
+     }
+      
+               
+      public function setDefault():void {  
+           txtId.text = "";      
+           txtDsName.text = "";   
+       }
+           
+      //Ocorreu uma falha ao chamar algum servico servico.     
+       public function onFault(event:FaultEvent):void    {
+            Alert.show(event.fault.rootCause.message); 
+                
+       }
+       
+    
+       private function pesquisarById():void {
+                txtId.text = "";
+            
+                if(pesquisarId.selected == true) {              
+                    txtId.enabled = true;
+                    txtId.editable = true;
+                    
+                }else{
+                	txtId.enabled = false;
+                    txtId.editable = false;
+                }
+       }
+       
+   
+    ]]> 
+       
+  </mx:Script>
+  
+      
+       				 		
+ </mx:TitleWindow>
+
+  
+ 
+

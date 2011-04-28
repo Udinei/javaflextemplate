@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
+	version="1.0">
+	
+	<persistence-unit name="maindatabase" transaction-type="RESOURCE_LOCAL">
+		 <provider>org.hibernate.ejb.HibernatePersistence</provider> 
+		<properties>
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.connection.username" value="postgres" />  
+			<property name="hibernate.connection.password" value="postgres" /> 
+
+   		   <!--  <property name="hibernate.connection.url" value="jdbc:postgresql://74.55.169.93:5432/ukaliko_apptest" />  -->  
+			 <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/apptest" />   
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" /> 
+			<property name="hibernate.show_sql" value="true" /> 
+			<property name="hibernate.c3p0.idle_test_period" value="14400" />
+			<property name="hibernate.c3p0.preferredTestQuery" value="select 1;" />
+			<property name="hibernate.c3p0.acquire_increment" value="3" />
+			<property name="hibernate.c3p0.timeout" value="25200"/>
+			<property name="hibernate.c3p0.max_size" value="15" />
+		</properties>
+	</persistence-unit>
+</persistence>

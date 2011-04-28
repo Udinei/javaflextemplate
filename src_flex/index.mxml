@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"  
+	  layout="vertical" verticalAlign="middle" horizontalAlign="center"   
+	   xmlns:screen="com.myorg.view.screen.*"> 
+	   
+    <!-- <screen:Paginacao/> -->
+      <screen:Main/>  
+    
+</mx:Application> 

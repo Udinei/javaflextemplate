@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pages="pages.*" verticalScrollPolicy="off" width="812.0455" height="1099.3181" horizontalAlign="left">
+
+	<mx:Style source="assets/css/style.css" />
+	<mx:Script>
+		<![CDATA[
+			private function changeImage(imgPath:String):void{
+				setStyle("backgroundImage", imgPath);
+			}
+		]]>
+	</mx:Script>
+	 
+	<mx:VBox width="676.96967" height="743.7121" horizontalAlign="left">
+	
+		<mx:ApplicationControlBar width="100%" height="100" verticalAlign="middle">
+			<mx:Image source="@Embed('assets/images/logo.png')" />
+			<mx:Spacer width="100%" />			
+			<mx:LinkBar dataProvider="{vsPages}" />
+		</mx:ApplicationControlBar>
+
+		<mx:ViewStack id="vsPages"  width="666" height="546">
+			<pages:Empresa showEffect="WipeRight" hideEffect="WipeLeft" show="changeImage('assets/images/home/bg.jpg')" width="634" height="526"/>		
+			<pages:Projetos showEffect="WipeRight" hideEffect="WipeLeft" show="changeImage('assets/images/projetos/bg2.jpg')" />
+			<pages:Equipe showEffect="WipeRight" hideEffect="WipeLeft" show="changeImage('assets/images/equipe/bg3.jpg')"/>
+			<pages:Contato showEffect="WipeRight" hideEffect="WipeLeft" show="changeImage('assets/images/equipe/bg3.jpg')"/>
+			<pages:ProductForm showEffect="WipeRight" hideEffect="WipeLeft" show="changeImage('assets/images/equipe/bg3.jpg')" width="624.4" height="466.75" horizontalAlign="left" verticalAlign="top"/>						
+		</mx:ViewStack>
+		
+		<mx:VBox width="589.01514" height="16.363636" horizontalAlign="center" verticalAlign="middle">
+			<mx:Label text="Adobe Flex - todos os direitos reservados" />
+		</mx:VBox>
+			
+	</mx:VBox>
+		
+</mx:Application>
+	

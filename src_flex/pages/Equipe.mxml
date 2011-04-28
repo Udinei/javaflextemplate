@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="100%" height="100%" label="EQUIPE" styleName="pageContainer">
+	
+	<mx:Label text="A Equipe" styleName="pageTitle" />
+	
+	<mx:Text width="80%">
+		<mx:htmlText>
+			<![CDATA[			
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+<p>Fusce eget est ac risus vehicula imperdiet. Maecenas libero purus, dictum sed, eleifend vel, iaculis quis, sapien. Vivamus scelerisque nisl nec mi. Donec scelerisque lacinia mi. Nullam vel lectus eu nunc sodales auctor. Sed eget enim. Donec quis nunc. Suspendisse potenti. Cras diam. Pellentesque facilisis porta sem. Ut euismod vulputate magna. Etiam eget enim eu risus pulvinar euismod. In hac habitasse platea dictumst. Pellentesque nisl felis, ullamcorper placerat, pellentesque quis, mattis in, lorem. Phasellus non tellus.</p>
+<p>Suspendisse volutpat, sem non commodo semper, lectus sem dictum enim, in iaculis mauris mi sed elit.</p>								
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+<p>Fusce eget est ac risus vehicula imperdiet. Maecenas libero purus, dictum sed, eleifend vel, iaculis quis, sapien. Vivamus scelerisque nisl nec mi. Donec scelerisque lacinia mi. Nullam vel lectus eu nunc sodales auctor. Sed eget enim. Donec quis nunc. Suspendisse potenti. Cras diam. Pellentesque facilisis porta sem. Ut euismod vulputate magna. Etiam eget enim eu risus pulvinar euismod. In hac habitasse platea dictumst. Pellentesque nisl felis, ullamcorper placerat, pellentesque quis, mattis in, lorem. Phasellus non tellus.</p>
+<p>Suspendisse volutpat, sem non commodo semper, lectus sem dictum enim, in iaculis mauris mi sed elit.</p>								
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+<p>Fusce eget est ac risus vehicula imperdiet. Maecenas libero purus, dictum sed, eleifend vel, iaculis quis, sapien. Vivamus scelerisque nisl nec mi. Donec scelerisque lacinia mi. Nullam vel lectus eu nunc sodales auctor. Sed eget enim. Donec quis nunc. Suspendisse potenti. Cras diam. Pellentesque facilisis porta sem. Ut euismod vulputate magna. Etiam eget enim eu risus pulvinar euismod. In hac habitasse platea dictumst. Pellentesque nisl felis, ullamcorper placerat, pellentesque quis, mattis in, lorem. Phasellus non tellus.</p>
+<p>Suspendisse volutpat, sem non commodo semper, lectus sem dictum enim, in iaculis mauris mi sed elit.</p>								
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+<p>Fusce eget est ac risus vehicula imperdiet. Maecenas libero purus, dictum sed, eleifend vel, iaculis quis, sapien. Vivamus scelerisque nisl nec mi. Donec scelerisque lacinia mi. Nullam vel lectus eu nunc sodales auctor. Sed eget enim. Donec quis nunc. Suspendisse potenti. Cras diam. Pellentesque facilisis porta sem. Ut euismod vulputate magna. Etiam eget enim eu risus pulvinar euismod. In hac habitasse platea dictumst. Pellentesque nisl felis, ullamcorper placerat, pellentesque quis, mattis in, lorem. Phasellus non tellus.</p>
+<p>Suspendisse volutpat, sem non commodo semper, lectus sem dictum enim, in iaculis mauris mi sed elit.</p>								
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+<p>Fusce eget est ac risus vehicula imperdiet. Maecenas libero purus, dictum sed, eleifend vel, iaculis quis, sapien. Vivamus scelerisque nisl nec mi. Donec scelerisque lacinia mi. Nullam vel lectus eu nunc sodales auctor. Sed eget enim. Donec quis nunc. Suspendisse potenti. Cras diam. Pellentesque facilisis porta sem. Ut euismod vulputate magna. Etiam eget enim eu risus pulvinar euismod. In hac habitasse platea dictumst. Pellentesque nisl felis, ullamcorper placerat, pellentesque quis, mattis in, lorem. Phasellus non tellus.</p>
+<p>Suspendisse volutpat, sem non commodo semper, lectus sem dictum enim, in iaculis mauris mi sed elit.</p>								
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+<p>Fusce eget est ac risus vehicula imperdiet. Maecenas libero purus, dictum sed, eleifend vel, iaculis quis, sapien. Vivamus scelerisque nisl nec mi. Donec scelerisque lacinia mi. Nullam vel lectus eu nunc sodales auctor. Sed eget enim. Donec quis nunc. Suspendisse potenti. Cras diam. Pellentesque facilisis porta sem. Ut euismod vulputate magna. Etiam eget enim eu risus pulvinar euismod. In hac habitasse platea dictumst. Pellentesque nisl felis, ullamcorper placerat, pellentesque quis, mattis in, lorem. Phasellus non tellus.</p>
+<p>Suspendisse volutpat, sem non commodo semper, lectus sem dictum enim, in iaculis mauris mi sed elit.</p>			
+			]]>
+		</mx:htmlText>
+	</mx:Text>
+	
+</mx:VBox>

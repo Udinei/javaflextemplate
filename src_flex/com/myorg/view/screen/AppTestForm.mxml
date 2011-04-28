@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	   layout="vertical" width="664" height="572" creationComplete="getList()"  xmlns:local="*" xmlns:screen="com.myorg.view.screen.*" horizontalAlign="left"> 
+
+<mx:VBox width="597" paddingLeft="0" paddingRight="0" horizontalCenter="0" top="15" height="503">
+
+        <mx:ApplicationControlBar id="acb" width="536" styleName="storeControlBar">
+
+            <mx:ToggleButtonBar
+                height="100%"
+                dataProvider="{storeViews}"
+                styleName="storeButtonBar"/>
+        </mx:ApplicationControlBar>
+
+        <mx:ViewStack id="storeViews" width="578" height="451" creationPolicy="all">
+            <mx:Box id="telaInicio" label="Integração">
+            <mx:Form width="559" height="386" >     
+	 
+        <mx:FormHeading label="Teste de Integração" width="100%"/>
+          
+         <!-- Barra Horizontal -->
+        <mx:HRule x="10" y="49" width="517"  height="1"/>
+    
+	    <mx:FormItem label="ID:" width="127">    
+    	<mx:TextInput width="100%" id="txtId"    
+	            text="{AppTest(dgAppTest.selectedItem).id}" editable="false" enabled="false"/>
+	     	  	  
+	  	 
+	 </mx:FormItem>  
+	    <mx:FormItem label="Descrição:" width="345">       
+	       <mx:TextInput width="100%" id="txtDsDescricao" text="{AppTest(dgAppTest.selectedItem).dsDescricao}"/>
+	          
+	 </mx:FormItem>
+	 
+	   	    
+	 <mx:DataGrid id="dgAppTest" width="518" height="265" dataProvider="{listAppTest}">   
+	       <mx:columns>   
+	         <mx:DataGridColumn headerText="ID" dataField="id" width="30"/>  
+	          <mx:DataGridColumn headerText="Descrição" dataField="dsDescricao"/>     
+	       </mx:columns>  
+	  </mx:DataGrid>
+	   
+ </mx:Form>
+ 	 
+     <local:BarraCrud width="561" novoClick="setDefault()" salvarClick="save()" excluirClick="remove()" pesquisarClick="search()" />  	     
+	  
+	<mx:HBox  width="563">
+			
+      <mx:Button id="BTvoltar" label="&lt;&lt;" left="10" bottom="10" enabled="{paginaAtual != 0 }" click="voltar()" />      
+      <mx:Button id="BTavancar" label="&gt;&gt;" left="62" bottom="10" click="avancar()" />
+      <mx:Label text="Registros por página:" bottom="12"/>
+      <mx:ComboBox id="cbQuantidade" left="238" bottom="10"  change="changeCombobox()" >
+          <mx:dataProvider>
+             <mx:Array>
+                <mx:Object label="10"/>
+                <mx:Object label="20"/>
+                <mx:Object label="50"/>
+             </mx:Array>
+          </mx:dataProvider>
+      </mx:ComboBox>
+     
+	<mx:Label left="298" bottom="12"   text="{totalRegistros} Registros encontrados" />
+
+	
+	</mx:HBox>
+            </mx:Box>
+            
+            <mx:Box id="telaProdutos" label="Produtos">
+                <mx:Text text="Lista de produtos...."/>
+                
+            </mx:Box>
+            
+             <mx:Box id="telaContato" label="Contato"> 
+                  <mx:Text text="Formulário de Contato"/>
+            </mx:Box>
+        </mx:ViewStack>
+
+    </mx:VBox>
+    
+
+	
+	<mx:RemoteObject id="appTestService" showBusyCursor="true"  fault="onFault(event)" destination="appTestService">    
+	    
+	    <mx:method name="save" result="onResultSave(event)" fault="onFault(event)"/>    
+	    <mx:method name="remove" result="onResultRemove(event)" fault="onFault(event)"/> 
+	    <mx:method name="getList" result="onResultGetList(event)" fault="onFault(event)"/> 
+	    <mx:method name="getSearch" result="onResultGeSearch(event)" fault="onFault(event)"/> 
+	    <mx:method name="listPaginacao" result="ResultBusca(event)" fault="onFault(event)"/>
+     </mx:RemoteObject>
+                
+         
+	  <mx:Script> 
+	    <![CDATA[
+	      import mx.charts.CategoryAxis;     
+	      import mx.collections.ArrayCollection;  
+	      import com.myorg.view.entity.AppTest;      
+	      import mx.rpc.events.ResultEvent;      
+	      import mx.rpc.events.FaultEvent;     
+	      import mx.controls.Alert;     
+	      
+	      [Bindable]
+	      private var listAppTest:ArrayCollection; 
+          private var appTest:AppTest;
+          
+         
+     //<!-- inicio paginacao --> 
+         
+       // guarda a página atual
+        [Bindable]
+         private var paginaAtual:Number=0;
+         [Bindable]
+         private var totalRegistros:Number = 0; 
+           
+        private function avancar():void{
+            paginaAtual += 1;
+            PesquisarMensagens();
+        }
+        
+        
+        private function voltar():void  {
+            paginaAtual -= 1;
+            PesquisarMensagens();
+        }
+        
+        private function changeCombobox():void {
+            paginaAtual = 0;
+            PesquisarMensagens();
+        }
+        
+         public function PesquisarMensagens():void
+        {
+            listPaginacao();
+        }
+        
+        private function listPaginacao():void { 
+        	
+         appTestService.listPaginacao(Number(cbQuantidade.selectedLabel)*paginaAtual, 
+                                                          cbQuantidade.selectedLabel);
+        }
+        
+        private function ResultBusca(e:ResultEvent):void
+        {
+            // É retornado um array com os elementos da paginacao.
+            var lista:ArrayCollection = e.result as ArrayCollection;
+            
+            totalRegistros = lista[0];
+            dgAppTest.dataProvider = lista[1];
+            
+            
+            
+            // verifica as próximas páginas
+            var numPaginas:int = totalRegistros / Number(cbQuantidade.selectedLabel)
+            
+           // Alert.show("total registro "+numPaginas + "pagina atual "+ paginaAtual);
+             
+            if(numPaginas > paginaAtual)
+            {
+                BTavancar.enabled = true;
+            }
+            else
+            {
+                BTavancar.enabled = false;
+            }
+        }
+         
+    
+     //<!--  fim paginacao -->
+     
+            
+	 public function save():void   {
+	  
+	  this.appTest = new AppTest();
+	 
+	  this.appTest.id   = new Number(txtId.text);    
+	  this.appTest.dsDescricao   = txtDsDescricao.text;   
+	  //Alert.show("ID  4  " +cargo.id);     
+    
+	  //Chama o metodo Save do servico "cargoService"
+	  appTestService.save(appTest);
+	  
+	 }
+	 
+	
+
+	 
+	 //Função que será executada após a conclusão do método save
+	  public function onResultSave(event:ResultEvent):void {   
+       txtDsDescricao.text = "";
+	   txtId.text = "";         	                           	                	
+	   status = "Salvo com Sucesso! Ultima ID: "+AppTest(event.result).id; 
+	   
+	   getList();  
+	  }
+	     
+	  public function remove():void {  
+	                       	                           	                                         	
+	    if (dgAppTest.selectedItem != null) {   
+	        appTest = dgAppTest.selectedItem as AppTest;  
+  	        appTestService.remove(appTest);
+  	             
+	       }else {  
+	            Alert.show("Selecione um Item na DataGrid");     
+	        }      
+	    } 
+            
+           
+      //Função que será executada após a conclusão do método remove    
+      public function onResultRemove(event:ResultEvent):void {  
+	     status = "Excluido com Sucesso!";       
+	     getList();
+	      
+     }        
+	     
+	  public function getList():void  {     
+         appTestService.getList();
+          totalRegistros = appTestService.getTotalRegistros();
+                  
+	  }  
+       
+         
+       
+           
+      public function search():void  {  
+      	  
+      txtId.editable=true;
+      
+      this.appTest = new AppTest();
+	  this.appTest.id   = new Number(txtId.text);    
+	  this.appTest.dsDescricao   = txtDsDescricao.text;
+	     
+	  //Alert.show("ID  4  " +cargo.id);   
+        appTestService.getSearch(appTest);         
+	  }
+	  
+	      
+      //Função que será executada após a conclusão do método  getList  
+      public function onResultGetList(event:ResultEvent):void {
+      	try{
+      		   listAppTest = event.result as ArrayCollection;
+      	}catch(error:IOErrorEvent){
+      		  trace("IOErrorEvent catch: " + error);
+      	}
+         	  
+      }
+      
+      //Função que será executada após a conclusão do método  getList  
+      public function onResultGeSearch(event:ResultEvent):void {
+         	   listAppTest = event.result as ArrayCollection;  
+      }   
+                     
+      public function setDefault():void {  
+           txtId.text = "";      
+           txtDsDescricao.text = "";   
+       }
+           
+      //Ocorreu uma falha ao chamar algum servico servico.     
+       public function onFault(event:FaultEvent):void    {  
+             Alert.show(event.fault.message);    
+       }
+       
+       private function nav(myUrl:String):void {
+	     var urlToNav:URLRequest = new URLRequest(myUrl);
+         navigateToURL(urlToNav,"_self"); 
+        }  
+    ]]> 
+       
+  </mx:Script>
+</mx:TitleWindow>
+
+  
+ 
+
