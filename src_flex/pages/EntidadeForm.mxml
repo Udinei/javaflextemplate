@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+	
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	   layout="vertical" width="544" height="482" creationComplete="listPaginacao()"
+	     xmlns:local="*" xmlns:screen="com.myorg.view.screen.*" horizontalAlign="left"
+	     label="PRODUTO" styleName="pageContainer"> 
+	<mx:FormHeading label="Tela de Teste do javaflextemplate " width="565" fontSize="12" textAlign="left" fontFamily="Arial"/>
+	<mx:FormHeading label="Principais Plataformas integradas: Java 1.6, Spring 2.5, JPA 1.0, Hibernate 3, Flex 3.0 e Postgres 8.1 " width="482" fontSize="9" textAlign="left" fontFamily="Arial"/>
+
+ 
+       				 		
+<mx:VBox width="494" paddingLeft="0" paddingRight="0" horizontalCenter="0" top="15" height="386">
+
+
+	
+        <mx:ViewStack id="storeViews" width="452" height="371" creationPolicy="all">
+            <mx:Box id="telaInicio" label="Integração" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+            
+            
+   <mx:Form width="422" height="282"  verticalScrollPolicy="off" horizontalScrollPolicy="off">     
+	 
+         <!-- Barra Horizontal -->
+        <mx:HRule x="10" y="49" width="388"  height="1"/>
+               
+	    <mx:FormItem label="ID:" width="368" direction="horizontal">    
+    	<mx:TextInput width="106" id="txtId"    
+	            text="{Entidade(dgEntidade.selectedItem).id}" editable="false" enabled="false"/>
+    	<mx:CheckBox id="pesquisarId" label="Pesquisar por id" click="pesquisarById()" textAlign="left"/>
+    	
+   
+	 </mx:FormItem>  
+	    <mx:FormItem label="Descrição:" width="345"  required="true">       
+	       <mx:TextInput width="100%" id="txtDsName" text="{Entidade(dgEntidade.selectedItem).name}" />
+	          
+	 </mx:FormItem>
+	 
+	   	    
+	 <mx:DataGrid id="dgEntidade" width="388" height="124" allowMultipleSelection="true" dataProvider="{listEntidade}">   
+	       <mx:columns>   
+	         <mx:DataGridColumn headerText="ID" dataField="id" width="30"/>  
+	          <mx:DataGridColumn headerText="Descrição" dataField="name"/>     
+	       </mx:columns>  
+	  </mx:DataGrid> 
+	 <mx:Text text="Dados recuperados da tabela entidade, com suas funcionalidades&#xa;básicas de CRUD implementadas. Esta tela servirá de base para estudo&#xa;e implementação dos componentes de tela do Flex" width="399" height="54" visible="true"/>
+	   
+ </mx:Form>
+ 
+ <mx:VBox>
+   <mx:Label id="pesqTot" visible="false" text="Pesquisa registros encontrados : {this.pesqTotalRegistros}"  width="223"/>
+ </mx:VBox>
+	
+  
+   <mx:HBox  width="441">
+     <mx:Button id="BTvoltar" label="&lt;&lt;" enabled="{paginaAtual != 0 }" click="voltar()" />
+     
+     <mx:Button id="BTavancar" label="&gt;&gt;" left="62" bottom="10" click="avancar()" />
+     <mx:Label text="Registros por página:"/>
+     <mx:ComboBox id="cbQuantidade" change="changeCombobox()" >
+         <mx:dataProvider>
+            <mx:Array>
+               <mx:Object label="10"/>
+               <mx:Object label="20"/>
+               <mx:Object label="50"/>
+            </mx:Array>
+         </mx:dataProvider>
+     </mx:ComboBox>
+     <mx:Label text="Total : {totalRegistros}"  width="135"/>
+   
+   
+   </mx:HBox>
+ 	 
+     <local:BarraCrud width="436" novoClick="setDefault()" salvarClick="save()" excluirClick="showAlert()" pesquisarClick="getSearch()" />  	     
+            </mx:Box>
+        </mx:ViewStack>
+
+    </mx:VBox>
+    
+
+	
+	<mx:RemoteObject id="entidadeService" showBusyCursor="true"  fault="onFault(event)" destination="entidadeService">    
+	    
+	    <mx:method name="save" result="onResultSave(event)" fault="onFault(event)"/>    
+	    <mx:method name="remove" result="onResultRemove(event)" fault="onFault(event)"/> 
+	    <mx:method name="getList" result="onResultGetList(event)" fault="onFault(event)"/> 
+	    <mx:method name="getSearch" result="onResultGetSearch(event)" fault="onFault(event)"/>
+	    <mx:method name="listPaginacao" result="ResultBusca(event)"  fault="onFault(event)"/>
+	    <mx:method name="getTotalRegistros" result="ResultTotalReg(event)" fault="onFault(event)"/>
+     </mx:RemoteObject>
+     
+            <mx:StringValidator	id="dsNameValidator"	
+       		                source="{txtDsName}"
+       				        property="text"
+       				 		required="true"	
+       				 		requiredFieldError="Campo obrigatório"/>    
+         
+	  <mx:Script> 
+	    <![CDATA[
+	    	import flash.sampler.DeleteObjectSample;
+	    	import mx.events.ValidationResultEvent;
+	      import mx.charts.CategoryAxis;     
+	      import mx.collections.ArrayCollection;  
+	      import mx.rpc.events.ResultEvent;      
+	      import mx.rpc.events.FaultEvent;     
+	      import mx.controls.Alert;     
+	      import mx.validators.Validator; 
+	      import mx.core.UIComponent;  
+	      import mx.events.CloseEvent;
+        
+           import com.myorg.view.entity.Entidade;  
+
+	      private var evTituloValid:ValidationResultEvent;     
+	      [Bindable]
+	      private var listEntidade:ArrayCollection;
+	      [Bindable]
+	      private var listEntidadeX:ArrayCollection; 
+          private var entidade:Entidade;
+        
+
+         
+     //<!-- inicio paginacao --> 
+         
+       // guarda a página atual
+        [Bindable]
+         private var paginaAtual:Number=0;
+         [Bindable]
+         private var totalRegistros:Number = 0;
+         
+         [Bindable] 
+         private var pesqTotalRegistros:Number = 0; 
+            
+        private function avancar():void{
+            paginaAtual += 1;
+            PesquisarMensagens();
+        }
+        
+        
+        private function voltar():void  {
+            paginaAtual -= 1;
+            PesquisarMensagens();
+        }
+        
+        private function changeCombobox():void {
+            paginaAtual = 0;
+            PesquisarMensagens();
+        }
+        
+         public function PesquisarMensagens():void
+        { 
+            listPaginacao();
+        }
+        
+        private function listPaginacao():void { 
+        	
+         entidadeService.listPaginacao(Number(cbQuantidade.selectedLabel)*paginaAtual, 
+                                                          cbQuantidade.selectedLabel);
+        }
+        
+        private function ResultBusca(e:ResultEvent):void
+        {
+            // É retornado um array com os elementos da paginacao.
+            var lista:ArrayCollection = e.result as ArrayCollection;
+            totalRegistros = lista[0];
+            dgEntidade.dataProvider = lista[1];
+                      
+            
+            // verifica as próximas páginas
+            var numPaginas:int = totalRegistros / Number(cbQuantidade.selectedLabel)
+            
+           // Alert.show("total registro "+numPaginas + "pagina atual "+ paginaAtual);
+             
+            if(numPaginas > paginaAtual)
+            {
+                BTavancar.enabled = true;
+            }
+            else
+            {
+                BTavancar.enabled = false;
+            }
+        }
+         
+    
+     //<!--  fim paginacao -->
+     
+            
+	 public function save():void   {
+	  pesqTot.visible = false;
+	//var evDsNameValid:ValidationResultEvent = dsNameValidator.validate();	
+	  
+	  //valida os campos obrigatórios	
+	  //if ((evDsNameValid.type == ValidationResultEvent.VALID)){
+	   	//  Alert.show('Validações com sucesso, agora envie para o SERVER', 'Sucesso');
+	   	  
+	   	  this.entidade = new Entidade();
+	      this.entidade.id   = new Number(txtId.text);    
+	      this.entidade.name   = txtDsName.text;   
+	    
+	  //Chama o metodo Save do servico "cargoService"
+	  entidadeService.save(entidade);
+	  
+	 /* }else{
+    	  Alert.show('Você deve preencher os campos corretamente', 'Erro, campos inválidos');
+      }*/
+    }
+	 
+	 //Função que será executada após a conclusão do método save
+	  public function onResultSave(event:ResultEvent):void {
+	  	
+       //mostra no canto esquerdo superior da tela o id od objeto cadastrado                    	                	
+	   status = "Salvo com Sucesso! Ultima ID: "+Entidade(event.result).id;
+	   
+	    //seta os campos apos salvar o objeto
+	    this.txtId.text = Entidade(event.result).id.toString();
+	    this.txtDsName.text = Entidade(event.result).name;
+	    	    	
+	    //obtem total de registros cadastrados e mostra mensagem da qtd de registros cadastrados para o objeto em questão	
+	    getTotalRegistros();
+	    //faz buscal por id
+      	getSearch();
+	   
+	  }
+	   
+	  //remove um ou mais objetos selecionados na grid dgEntidade   
+	  public function remove():void {
+	  	//abilita a visualização da mensagem da qtd de registros pesquisados encontrados  
+	    pesqTot.visible = false;
+	    
+	  //  var eventObj:CloseEvent;
+	  //   Alert.show("Corpo do texto", "TITULO",11);
+	     
+	    //se tiver algum objeto selecionado na grid
+	    if (dgEntidade.selectedItem != null) {
+	    
+	       	  // if (event.detail==Alert.OK) {
+             //      var a:Alert = Alert.show("Copy Text?", "Alert", Alert.OK | Alert.CANCEL, this,null ,null, Alert.OK);
+             //Alert.show("Copy Text?"+a.)
+	    	 // envia mensagem para service remover o objeto ou os objetos selecionados
+ 
+	          entidadeService.remove(dgEntidade.selectedItems);
+	         
+	            
+	       }else {  
+	            Alert.show("Selecione um Item na DataGrid");     
+	        }                   	                           	                                         	
+	   
+	    } 
+	
+	     
+		  // Mostra Alert control
+		public function showAlert() : void
+		{   
+			Alert.yesLabel = "Sim";
+		    Alert.noLabel = "Não";
+		
+		    // the show method follows the method signature from the Flex Actionscript API
+		    Alert.show( "Deseja realmente excluir o item(s)?",
+		                         "Confirmar Excluir", 
+		                         Alert.YES| Alert.NO,
+		                         null,
+		                         handleAlert,
+		                         null,
+		                         Alert.YES);
+		}
+ 
+		// handle the Alert control button click
+		public function handleAlert( event:Object ) : void
+		{
+		    if( event.detail == Alert.YES)
+		    {
+		        remove();// YES button was clicked
+		    }
+		}
+	     
+	  public function getList():void  {     
+         entidadeService.getList();
+                           
+	  }  
+      
+       public function getSearch():void  {
+       	search();
+       	pesqTot.visible = true;     
+       	
+       }  
+      
+      public function search():void  {  
+      	  
+      txtId.editable=true;
+      
+      entidade = new Entidade();
+	  entidade.id   = new Number(txtId.text);    
+	  entidade.name   = txtDsName.text;
+	    
+       entidadeService.getSearch(entidade, Number(cbQuantidade.selectedLabel)*paginaAtual, 
+                                                          cbQuantidade.selectedLabel);         
+	  }
+	  
+	      
+      //Função que será executada após a conclusão do método  getList  
+      public function onResultGetList(event:ResultEvent):void {
+      	try{
+      		   listEntidade = event.result as ArrayCollection;
+      		   this.totalRegistros = listEntidade.length;
+      
+      	}catch(error:IOErrorEvent){
+      		  trace("IOErrorEvent catch: " + error);
+      	}
+         	  
+      }
+      
+        //Função que será executada após a conclusão do método remove    
+      public function onResultRemove(event:ResultEvent):void {
+    	
+      	    status = "Excluido com Sucesso!";
+      	    listPaginacao();
+      	           	
+	  	      
+     }       
+      
+      //Função que será executada após a conclusão do método  getSearch  
+      public function onResultGetSearch(event:ResultEvent):void {
+         	   listEntidade = event.result as ArrayCollection;
+         	        	  
+         	   this.pesqTotalRegistros = listEntidade.length;         	   
+          	   entidade  = listEntidade[0];
+         	                 
+         	   this.txtId.text = entidade.id.toString();
+	           this.txtDsName.text = entidade.name;
+	         
+      }   
+        
+      //retorna o total de registros cadastrado do objeto em uso  
+     public function getTotalRegistros():void{
+     	  entidadeService.getTotalRegistros(this.entidade);
+     	    	    	
+     }  
+     
+     //funcao que sera executada apos o execucao da funcao getTotalRegistros, ira setar a mensagem qtd registros cadastrados
+     // para o objeto em uso.           
+     public function ResultTotalReg(event:ResultEvent):void {
+        var listTotalReg:ArrayCollection;
+        //obtem o retorno de getTotalRegistros que é um lista de objeto,
+        listTotalReg = event.result as ArrayCollection;
+        // obtendo a primeira lista, que informa a qtd de objetos cadastrados, e setando a mensagem
+        this.totalRegistros = listTotalReg[0];
+      
+             
+     }
+      
+               
+      public function setDefault():void {  
+           txtId.text = "";      
+           txtDsName.text = "";   
+       }
+           
+      //Ocorreu uma falha ao chamar algum servico servico.     
+       public function onFault(event:FaultEvent):void    {
+            Alert.show(event.fault.rootCause.message); 
+                
+       }
+       
+    
+       private function pesquisarById():void {
+                txtId.text = "";
+            
+                if(pesquisarId.selected == true) {              
+                    txtId.enabled = true;
+                    txtId.editable = true;
+                    
+                }else{
+                	txtId.enabled = false;
+                    txtId.editable = false;
+                }
+       }
+       
+   
+    ]]> 
+       
+  </mx:Script>
+  
+      
+       				 		
+ </mx:TitleWindow>
+
+  
+ 
+

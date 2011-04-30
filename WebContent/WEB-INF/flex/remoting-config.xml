@@ -24,4 +24,10 @@
 			<source>productServiceImpl</source>
 		</properties>
 	</destination>
+		<destination id="entidadeService">
+		<properties>
+			<factory>spring</factory>
+			<source>entidadeServiceImpl</source>
+		</properties>
+	</destination>
 </service>

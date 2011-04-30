@@ -1,4 +1,4 @@
-package com.myorg.business.services;
+package com.myorg.infrastructure;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 
 import org.springframework.jmx.access.InvocationFailureException;
 
-import com.myorg.infrastructure.GenericDAO;
 
 /**
  * ServiceSupport - Classe generica que implementa metodos basicos, que trata as requisições recebidas da camada view
@@ -98,7 +97,7 @@ public abstract class ServiceSupport  {
 
 			ArrayList<Entity> listObj = genericDAO.findAll();
 			/*
-			 * for(Product prod: productList){
+			 * for(Entidade prod: productList){
 			 * System.out.println(prod.getName()); }
 			 */
 

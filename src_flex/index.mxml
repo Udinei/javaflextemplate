@@ -4,6 +4,6 @@
 	   xmlns:screen="com.myorg.view.screen.*"> 
 	   
     <!-- <screen:Paginacao/> -->
-      <screen:Main/>  
+      <screen:EntidadeCRUD/>  
     
 </mx:Application> 

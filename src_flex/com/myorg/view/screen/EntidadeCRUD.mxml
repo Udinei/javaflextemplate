@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:pages="pages.*" verticalScrollPolicy="off" width="812.0455" height="1099.3181" horizontalAlign="left">
+
+
+	 
+	 <mx:VBox width="676.96967" height="743.7121" horizontalAlign="left">
+	
+		<mx:ViewStack id="vsPages"  width="666" height="546">
+		<pages:EntidadeForm showEffect="WipeRight" hideEffect="WipeLeft"  width="634" height="526"/>		
+			<pages:EntidadeForm showEffect="WipeRight" hideEffect="WipeLeft" width="624.4" height="466.75" horizontalAlign="left" verticalAlign="top"/>						
+		</mx:ViewStack>
+		
+		<mx:VBox width="589.01514" height="16.363636" horizontalAlign="center" verticalAlign="middle">
+			<mx:Label text="Adobe Flex - todos os direitos reservados" />
+		</mx:VBox>
+			
+	</mx:VBox>
+		
+</mx:Application>
+	
